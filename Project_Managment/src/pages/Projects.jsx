@@ -1,32 +1,25 @@
-import MyNavbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import { projects } from "../mock/dummyProjects";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { useEffect, useState } from "react";
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/projects") // Use your backend API endpoint
+      .then((response) => response.json())
+      .then((data) => setProjects(data))
+      .catch((error) => console.error("Error fetching projects:", error));
+  }, []);
+
   return (
     <div>
-      <MyNavbar />
-      <Container fluid>
-        <Row>
-          <Col md={3}><Sidebar /></Col>
-          <Col md={9}>
-            <h2 className="mt-3">Projects</h2>
-            <Row>
-              {projects.map((project) => (
-                <Col md={4} key={project.id}>
-                  <Card className="mb-3">
-                    <Card.Body>
-                      <Card.Title>{project.name}</Card.Title>
-                      <Card.Text>{project.description}</Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          </Col>
-        </Row>
-      </Container>
+      <h1>Projects List</h1>
+      <ul>
+        {projects.length > 0 ? (
+          projects.map((project) => <li key={project.id}>{project.name}</li>)
+        ) : (
+          <p>Loading projects...</p>
+        )}
+      </ul>
     </div>
   );
 };
